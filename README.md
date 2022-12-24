@@ -5,9 +5,12 @@
 This package solves the forward and inverse kinematics of a 6 axis
 robot.
 
+Automated documentation for this Go package is available from [![Go
+Reference](https://pkg.go.dev/badge/zappem.net/pub/kinematics/sixaxis.svg)](https://pkg.go.dev/zappem.net/pub/pub/kinematics/sixaxis).
+
 ## License info
 
-The sixaxis package is distributed with the same BSD 3-clause license
+The `sixaxis` package is distributed with the same BSD 3-clause license
 as that used by [golang](https://golang.org/LICENSE) itself.
 
 ## Reporting bugs
