@@ -5,12 +5,12 @@
 // with the robot in its "all angles zero" pose (all joints point arm
 // segment up in positive Z direction).
 //
-//   J0 = rotate around Z axis an arm segment of length d0
-//   J1 = rotate around X axis an arm segment of length d1
-//   J2 = rotate around X axis an arm segment of length d2
-//   J3 = rotate around Z axis an arm segment of length d3
-//   J4 = rotate around X axis an arm segment of length d4
-//   J5 = rotate around Z axis an arm segment of length d5 = 0
+//	J0 = rotate around Z axis an arm segment of length d0
+//	J1 = rotate around X axis an arm segment of length d1
+//	J2 = rotate around X axis an arm segment of length d2
+//	J3 = rotate around Z axis an arm segment of length d3
+//	J4 = rotate around X axis an arm segment of length d4
+//	J5 = rotate around Z axis an arm segment of length d5 = 0
 package sixaxis
 
 import (
@@ -38,12 +38,12 @@ type Pose struct {
 
 // Robot holds the combined geometric state of a robot.
 type Robot struct {
-	j []Joint
-	p Pose
-
 	// Precision holds the dtheta precision of the robot. It
 	// defaults to geom.Zeroish fraction of a full rotation.
 	Precision geom.Angle
+
+	j []Joint
+	p Pose
 }
 
 // Pose returns the current pose of the robot.
@@ -594,8 +594,8 @@ func (r *Robot) align(was *Pose, target Pose) (Pose, geom.Angle, geom.Vector, er
 }
 
 // Linear returns a channel over which a backgrounded function
-// forwards a sequence of joint angle poses to move linearly between
-// the initial robot pose and the target pose. The function terminates
+// forwards a sequence of paces that cause the robot to move linearly
+// between the was pose and the target pose. The function terminates
 // and closes the channel to signal early exit if the quitter channel
 // is closed. Total is the range over which we report fractional
 // progress at each pose.
@@ -609,7 +609,8 @@ func (r *Robot) Linear(was *Pose, total float64, target Pose, quitter <-chan str
 	return paces, nil
 }
 
-// Joined translates a destination pose into a Pace over a channel.
+// Joined translates a destination pose into a single Pace over the
+// returned channel.
 func (r *Robot) Joined(was *Pose, total float64, target Pose, quitter <-chan struct{}) (<-chan Pace, error) {
 	paces := make(chan Pace)
 	go func() {
@@ -715,9 +716,9 @@ func (r *Robot) arc(start, target Pose, a geom.Angle, v geom.Vector, paces chan<
 }
 
 // Arc returns a channel over which a set of paces map out a linearly
-// interpolatable set of joint poses that map out an arc that join was
-// to target. The plane of said arc is perpendicular to axis, and the
-// angle of the arc is theta.
+// interpolatable set of joint poses that map out an arc from the was
+// pose to the target pose. The plane of said arc is perpendicular to
+// axis, and the angle of the arc is theta.
 func (r *Robot) Arc(was *Pose, total float64, target Pose, axis geom.Vector, theta geom.Angle, quitter <-chan struct{}) (<-chan Pace, error) {
 	if geom.Zeroish(theta.Rad()) {
 		// Treat this as a straight line.
