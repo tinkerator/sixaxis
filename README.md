@@ -5,6 +5,9 @@
 This package solves the forward and inverse kinematics of a 6 axis
 robot.
 
+A working example of the use of this package is [the Saxis
+robot](https://github.com/tinkerator/saxis).
+
 Automated documentation for this Go package is available from [![Go
 Reference](https://pkg.go.dev/badge/zappem.net/pub/kinematics/sixaxis.svg)](https://pkg.go.dev/zappem.net/pub/kinematics/sixaxis).
 
