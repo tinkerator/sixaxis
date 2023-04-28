@@ -465,24 +465,26 @@ func (r *Robot) Closest(ref *Pose, cjs [][]geom.Angle) (int, error) {
 
 // Pace represents a fraction completed of a linear path between two
 // poses in terms of a number [0,1] and a collection of joint angles
-// for the robot.
+// for the robot. Typically, Paces are generated in a way that
+// interpolating all joints between two paces equally will follow the
+// desired trajectory.
 type Pace struct {
 	Frac float64
 	J    []geom.Angle
 }
 
 // linear uses binary search to find a series of succesive waypoints
-// between was and target (as parameterized by an angle, b in (0,a])
-// that satisfies the constraint that all joints appear to be linearly
-// interpolated between successive waypoints to b. The function
-// returns this set of joints and the fraction of the path completed,
-// at the completion of each pace, over the paces channel. Linearity
-// of interpolation is determined by computing the mid point and
-// validating that its joint angles are 50% between the end point
-// joint angles. The accuracy of the 50% test is in terms of the
-// robot's Precision number. That is, the cumulative error from the
-// rotations on each joint amounts to a displacement in x-y-z space of
-// less than the robot's Precision.
+// (expressed as Paces) between was and target (as parameterized by an
+// angle, b in (0,a]) that satisfies the constraint that all joints
+// appear to be linearly interpolated between successive waypoints to
+// b. The function returns this set of joints and the fraction of the
+// path completed, at the completion of each Pace, over the Paces
+// channel. Linearity of interpolation is determined by computing the
+// mid point and validating that its joint angles are 50% between the
+// end point joint angles. The accuracy of the 50% test is in terms of
+// the robot's Precision number. That is, the cumulative error from
+// the rotations on each joint amounts to a displacement in x-y-z
+// space of less than the robot's Precision.
 func (r *Robot) linear(start, target Pose, a geom.Angle, v geom.Vector, paces chan<- Pace, total float64, quitter <-chan struct{}) {
 	defer close(paces)
 	wp0 := Pose{
@@ -610,7 +612,8 @@ func (r *Robot) Linear(was *Pose, total float64, target Pose, quitter <-chan str
 }
 
 // Joined translates a destination pose into a single Pace over the
-// returned channel.
+// returned channel. This is the computationally simplest form of
+// trajectory since the whole path is a uniform Joint interpolation.
 func (r *Robot) Joined(was *Pose, total float64, target Pose, quitter <-chan struct{}) (<-chan Pace, error) {
 	paces := make(chan Pace)
 	go func() {
